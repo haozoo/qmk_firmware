@@ -54,6 +54,8 @@ const key_override_t amth_cycl_override = ko_make_basic(MOD_MASK_SHIFT, AMSM, AM
 const key_override_t backspace_override = ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, LOPT(KC_BSPC));
 const key_override_t copypaste_override = ko_make_basic(MOD_MASK_GUI, KC_V, TD_V);
 const key_override_t grave_esc_override = ko_make_basic(MOD_MASK_SHIFT, KC_ESC, KC_GRV);
+const key_override_t scroll_up_override = ko_make_basic(MOD_MASK_SHIFT, KC_UP, KC_MS_WH_UP);
+const key_override_t scroll_dn_override = ko_make_basic(MOD_MASK_SHIFT, KC_DOWN, KC_MS_WH_DOWN);
 const key_override_t snip_tool_override = ko_make_basic(MOD_MASK_SHIFT, MACST, ARCST);
 const key_override_t arc_app_1_override = ko_make_basic(MOD_MASK_SHIFT, ARC1, APP1);
 const key_override_t arc_app_2_override = ko_make_basic(MOD_MASK_SHIFT, ARC2, APP2);
@@ -64,6 +66,8 @@ const key_override_t **key_overrides = (const key_override_t *[]){
 	&copypaste_override,
 	&grave_esc_override,
 	&snip_tool_override,
+	&scroll_up_override,
+	&scroll_dn_override,
 	&arc_app_1_override,
 	&arc_app_2_override,
 	&arc_app_3_override,
