@@ -17,28 +17,16 @@
 
 enum custom_keycodes {
     _____ = SAFE_RANGE,
-	MACST,  // MacOS screenshot to clipboard snipping tool 
-	ARCST,  // Arc browser UI component snipping tool
-	ARC1,	// Arc browser fast pinned tab navigation...
-	ARC2, 
-	ARC3,
-	ARC4,
-	ARC5,
-	ARC6,
-	APP1,	// MacOS fast application navigation...
-	APP2,
-	APP3,
-	AMSL,   // Amethyst switch layouts 
-	AMSM,	// Amethyst switch main window 
+	SNIPT,  // MacOS screenshot to clipboard snipping tool + Arc browser UI component snipping tool
+	NAV1,	// Arc browser fast pinned tab navigation + MacOS fast application navigation...
+	NAV2,
+	NAV3,
+	NAV4,
+	NAV5,
+	NAV6,
+	AMSW,   // Amethyst switch layouts + switch main window 
 	AMIN, 	// Amethyst increase main window's horizontal width 
 	AMDE,   // Amethyst decrease main window's horizontal width
-};
-
-enum tap_dances {
-    TD_V,
-	TD_CBR,
-	TD_BRC,
-	TD_PRN,
 };
 
 // Combos 
@@ -50,83 +38,99 @@ combo_t key_combos[] = {
 };
 
 // Key Overrides AKA mod-morphs: 
-const key_override_t amth_cycl_override = ko_make_basic(MOD_MASK_SHIFT, AMSM, AMSL);
 const key_override_t backspace_override = ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, LOPT(KC_BSPC));
-const key_override_t copypaste_override = ko_make_basic(MOD_MASK_GUI, KC_V, TD_V);
+const key_override_t deleteall_override = ko_make_basic(MOD_MASK_SHIFT, KC_DEL, LOPT(KC_DEL));
 const key_override_t grave_esc_override = ko_make_basic(MOD_MASK_SHIFT, KC_ESC, KC_GRV);
-const key_override_t scroll_up_override = ko_make_basic(MOD_MASK_SHIFT, KC_UP, KC_MS_WH_UP);
-const key_override_t scroll_dn_override = ko_make_basic(MOD_MASK_SHIFT, KC_DOWN, KC_MS_WH_DOWN);
-const key_override_t snip_tool_override = ko_make_basic(MOD_MASK_SHIFT, MACST, ARCST);
-const key_override_t arc_app_1_override = ko_make_basic(MOD_MASK_SHIFT, ARC1, APP1);
-const key_override_t arc_app_2_override = ko_make_basic(MOD_MASK_SHIFT, ARC2, APP2);
-const key_override_t arc_app_3_override = ko_make_basic(MOD_MASK_SHIFT, ARC3, APP3);
 const key_override_t **key_overrides = (const key_override_t *[]){
-	&amth_cycl_override,
     &backspace_override,
-	&copypaste_override,
+	&deleteall_override,
 	&grave_esc_override,
-	&snip_tool_override,
-	&scroll_up_override,
-	&scroll_dn_override,
-	&arc_app_1_override,
-	&arc_app_2_override,
-	&arc_app_3_override,
     NULL
 };
 
-// (TD) Tap Dance definitions:
-tap_dance_action_t tap_dance_actions[] = {
-    [TD_V] = ACTION_TAP_DANCE_DOUBLE(LCMD(KC_V), HYPR(KC_V)),
-};
+void process_nav_key(uint16_t keycode, keyrecord_t *record) {
+    if (record->event.pressed) {
+        if (get_mods() & MOD_MASK_SHIFT) {
+			add_mods(MOD_MASK_CAG);
+			tap_code(keycode);
+			del_mods(MOD_MASK_CAG);
+        } else {
+			add_mods(MOD_MASK_CTRL);
+			tap_code(keycode);
+			del_mods(MOD_MASK_CTRL);
+        }
+    }
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-		case MACST: 
-			if (record->event.pressed) SEND_STRING(SS_LCMD(SS_LCTL(SS_LSFT("4"))));
+		case NAV1:  
+            process_nav_key(KC_1, record);
+            break;
+        case NAV2:
+            process_nav_key(KC_2, record);
+            break;
+        case NAV3:
+            process_nav_key(KC_3, record);
+            break;
+        case NAV4:
+            process_nav_key(KC_4, record);
+            break;
+        case NAV5:
+            process_nav_key(KC_5, record);
+            break;
+        case NAV6:
+            process_nav_key(KC_6, record);
+            break;
+		case SNIPT: 
+			if (record->event.pressed) {
+				if (get_mods() & MOD_MASK_SHIFT) {
+					SEND_STRING(SS_LCMD(SS_LSFT("2"))); // ARC
+				} else {
+					SEND_STRING(SS_LCMD(SS_LCTL(SS_LSFT("4")))); // MAC
+				}
+			} 
 			break;
-		case ARCST: 
-			if (record->event.pressed) SEND_STRING(SS_LCMD(SS_LSFT("2")));
+		case AMSW:
+			if (record->event.pressed) {
+				if (get_mods() & MOD_MASK_SHIFT) {
+					SEND_STRING(SS_LCTL(SS_LOPT("<"))); // switch layout
+				} else {
+					SEND_STRING(SS_LCTL(SS_LOPT("\n"))); // switch main window
+				}
+			}
 			break;
-		case ARC1:
-			if (record->event.pressed) SEND_STRING(SS_LCMD("1"));
-			break;
-		case ARC2:
-			if (record->event.pressed) SEND_STRING(SS_LCMD("2"));
-			break;
-		case ARC3:
-			if (record->event.pressed) SEND_STRING(SS_LCMD("3"));
-			break;
-		case ARC4:
-			if (record->event.pressed) SEND_STRING(SS_LCMD("4"));
-			break;
-		case ARC5:
-			if (record->event.pressed) SEND_STRING(SS_LCMD("5"));
-			break;
-		case ARC6:
-			if (record->event.pressed) SEND_STRING(SS_LCMD("6"));
-			break;
-		case APP1:
-			if (record->event.pressed) SEND_STRING(SS_HYPER("1"));
-			break;
-		case APP2:
-			if (record->event.pressed) SEND_STRING(SS_HYPER("2"));
-			break;
-		case APP3:
-			if (record->event.pressed) SEND_STRING(SS_HYPER("3"));
-			break;
-		case AMSL:
-			if (record->event.pressed) SEND_STRING(SS_LCTL(SS_LOPT("<")));
-			break;
-		case AMSM:
-			if (record->event.pressed) SEND_STRING(SS_LCTL(SS_LOPT("\n")));
-			break;
-		case AMIN:
-			if (record->event.pressed) SEND_STRING(SS_TAP(X_LCTL(X_LOPT(X_UP))));
+		case AMIN: 
+			if (record->event.pressed) {
+				add_mods(MOD_MASK_CA);
+				tap_code(KC_UP);
+				del_mods(MOD_MASK_CA);
+			}
 			break;
 		case AMDE:
-			if (record->event.pressed) SEND_STRING(SS_TAP(X_LCTL(X_LOPT(X_DOWN))));
+			if (record->event.pressed) {
+				add_mods(MOD_MASK_CA);
+				tap_code(KC_DOWN);
+				del_mods(MOD_MASK_CA);
+			}
 			break;
-    }
+		}	
+
+	// Macro + tap dance fo KC_V
+	if (record->event.pressed) {
+		static bool tapped = false;
+		static uint16_t tap_timer = 0;
+		
+		if (keycode == KC_V && (get_mods() & MOD_MASK_GUI)) {
+			if (tapped && !timer_expired(record->event.time, tap_timer)) {
+				SEND_STRING(SS_HYPER("v"));
+			}
+			tapped = true;
+			tap_timer = record->event.time + TAPPING_TERM;
+		} else {
+			tapped = false;
+		}
+	}
     return true;
 };
 
@@ -137,7 +141,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
   	*/     KC_TAB,     KC_A,     KC_S,     KC_D,     KC_F,     KC_G,                            KC_H,     KC_J,     KC_K,     KC_L,  KC_SCLN, KC_QUOTE, \
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
-  	*/    KC_LSFT,     KC_Z,     KC_X,     KC_C,    KC_V,    KC_B,                            KC_N,     KC_M, KC_COMMA,   KC_DOT, KC_SLASH,  KC_HYPR, \
+  	*/    KC_LSFT,     KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,                            KC_N,     KC_M, KC_COMMA,   KC_DOT, KC_SLASH,  KC_HYPR, \
   	/* ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╮  ╭━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
   	*/                                            KC_LOPT,  KC_LCMD, L1_THUMB,    R1_THUMB, R2_THUMB,  KC_RCTL									   	    \
   	//      								   ╰─━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯  ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
@@ -146,9 +150,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	/* ╭━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━╮                      ╭━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━╮
   	*/   KC_GRAVE,     KC_1,     KC_2,     KC_3,     KC_4,     KC_5,                            KC_6,     KC_7,     KC_8,     KC_9,     KC_0,   KC_DEL, \
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
-  	*/    _______,    MACST,     AMIN,     ARC1,     ARC2,     ARC3,                         XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_BSLS,  KC_MINS,   KC_EQL, \
+  	*/    _______,    SNIPT,     AMIN,     NAV1,     NAV2,     NAV3,                         XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_BSLS,  KC_MINS,   KC_EQL, \
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
-  	*/    _______,     AMSM,     AMDE,     ARC4,     ARC5,     ARC6,                         XXXXXXX,  XXXXXXX, KC_COMMA,   KC_DOT, KC_SLASH,  _______, \
+  	*/    _______,     AMSW,     AMDE,     NAV4,     NAV5,     NAV6,                         XXXXXXX,  XXXXXXX, KC_COMMA,   KC_DOT, KC_SLASH,  _______, \
   	/* ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╮  ╭━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
   	*/                                            _______,  _______,  _______,     _______,  _______,  _______									   	    \
   	//      								   ╰─━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯  ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
