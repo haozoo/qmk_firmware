@@ -52,20 +52,21 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     NULL
 };
 
-// void hyper_paste(tap_dance_state_t *state, void *user_data) {
-//   	if (get_mods() & MOD_MASK_GUI) {
-// 		switch (state->count) {
-// 			case 1:
-// 				SEND_STRING(SS_LCMD("v"));
-// 				break;
-// 			case 2:
-// 				SEND_STRING(SS_HYPER("v"));
-// 				break;
-// 		}
-// 	} else {
-// 		tap_code(KC_V);
-// 	}
-// }
+void hyper_paste(tap_dance_state_t *state, void *user_data) {
+    if (get_mods() & MOD_MASK_GUI) {  
+        switch (state->count) {
+            case 1: 
+                tap_code16(LCMD(KC_V));
+                break;
+            case 2: 
+                tap_code16(HYPR(KC_V));
+                break;
+        }
+    } else {
+		tap_code(KC_V); 
+    }
+    reset_tap_dance(state);
+}
 
 // (TD) Tap Dance definitions:
 tap_dance_action_t tap_dance_actions[] = {
