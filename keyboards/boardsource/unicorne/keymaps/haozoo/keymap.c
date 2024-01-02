@@ -121,17 +121,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			}
 			break;
 		case KC_V:
-			static bool tapped = false;
-			static uint16_t tap_timer = 0;
-			if (mod_state & MOD_MASK_GUI) {
-				if (tapped && !timer_expired(record->event.time, tap_timer)) {
-					tap_code16(HYPR(KC_V));
+			if (record->event.pressed) {
+				static bool tapped = false;
+				static uint16_t tap_timer = 0;
+				if (mod_state & MOD_MASK_GUI) {
+					if (tapped && !timer_expired(record->event.time, tap_timer)) {
+						tap_code16(HYPR(KC_V));
+					}
+					tapped = true;
+					tap_timer = record->event.time + TAPPING_TERM;
+				} else {
+					tap_code(KC_V);
+					tapped = false; 
 				}
-				tapped = true;
-				tap_timer = record->event.time + TAPPING_TERM;
-			} else {
-				tap_code(KC_V);
-				tapped = false; 
 			}
 			break;
 		default:
