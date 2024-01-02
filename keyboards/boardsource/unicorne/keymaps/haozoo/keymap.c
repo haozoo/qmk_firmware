@@ -122,8 +122,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			break;
 		case KC_V:
 			if (record->event.pressed) {
-				if (mod_state & MOD_MASK_SHIFT) {
-					del_mods(MOD_MASK_SHIFT);
+				if (mod_state & MOD_MASK_GUI) {
+					del_mods(MOD_MASK_GUI);
 					tap_code(TD(TD_V));
 					set_mods(mod_state);
 				} else {
