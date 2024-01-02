@@ -29,10 +29,6 @@ enum custom_keycodes {
 	AMDE,   // Amethyst decrease main window's horizontal width
 };
 
-enum tap_dances {
-    TD_V,
-};
-
 // Combos 
 const uint16_t PROGMEM alfred_search_combo[] = {KC_SPC, KC_BSPC, COMBO_END};
 const uint16_t PROGMEM wooshy_search_combo[] = {KC_B, KC_N, COMBO_END};
@@ -50,27 +46,6 @@ const key_override_t **key_overrides = (const key_override_t *[]){
 	&deleteall_override,
 	&grave_esc_override,
     NULL
-};
-
-void hyper_paste(tap_dance_state_t *state, void *user_data) {
-    if (get_mods() & MOD_MASK_GUI) {  
-        switch (state->count) {
-            case 1: 
-                tap_code16(LCMD(KC_V));
-                break;
-            case 2: 
-                tap_code16(HYPR(KC_V));
-                break;
-        }
-    } else {
-		tap_code(KC_V); 
-		reset_tap_dance(state);
-    }
-}
-
-// (TD) Tap Dance definitions:
-tap_dance_action_t tap_dance_actions[] = {
-    [TD_V] = ACTION_TAP_DANCE_FN(hyper_paste),
 };
 
 void process_nav_key(uint16_t keycode, keyrecord_t *record) {
@@ -145,6 +120,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				del_mods(MOD_MASK_CA);
 			}
 			break;
+		case KC_V:
+			static bool tapped = false;
+			static uint16_t tap_timer = 0;
+			if (mod_state & MOD_MASK_GUI) {
+				if (tapped && !timer_expired(record->event.time, tap_timer)) {
+					tap_code16(HYPR(KC_V));
+				}
+				tapped = true;
+				tap_timer = record->event.time + TAPPING_TERM;
+			} else {
+				tap_code(KC_V);
+				tapped = false; 
+			}
+			break;
+		default:
+			tapped = false; 
 	}
     return true;
 };
@@ -156,7 +147,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
   	*/     KC_TAB,     KC_A,     KC_S,     KC_D,     KC_F,     KC_G,                            KC_H,     KC_J,     KC_K,     KC_L,  KC_SCLN, KC_QUOTE, \
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
-  	*/    KC_LSFT,     KC_Z,     KC_X,     KC_C, TD(TD_V),     KC_B,                            KC_N,     KC_M, KC_COMMA,   KC_DOT, KC_SLASH,  KC_HYPR, \
+  	*/    KC_LSFT,     KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,                            KC_N,     KC_M, KC_COMMA,   KC_DOT, KC_SLASH,  KC_HYPR, \
   	/* ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╮  ╭━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
   	*/                                            KC_LOPT,  KC_LCMD, L1_THUMB,    R1_THUMB, R2_THUMB,  KC_RCTL									   	    \
   	//      								   ╰─━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯  ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
