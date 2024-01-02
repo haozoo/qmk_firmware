@@ -29,11 +29,15 @@ enum custom_keycodes {
 	AMDE,   // Amethyst decrease main window's horizontal width
 };
 
+enum tap_dances {
+    TD_V,
+};
+
 // Combos 
 const uint16_t PROGMEM alfred_search_combo[] = {KC_SPC, KC_BSPC, COMBO_END};
 const uint16_t PROGMEM wooshy_search_combo[] = {KC_B, KC_N, COMBO_END};
 combo_t key_combos[] = {
-    COMBO(alfred_search_combo, LCMD(KC_SPC)),
+    COMBO(alfred_search_combo, LCMD(KC_SPC)), // TODO: NEEDS FIXING
     COMBO(wooshy_search_combo, HYPR(KC_W)),
 };
 
@@ -48,6 +52,26 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     NULL
 };
 
+void hyper_paste(qk_tap_dance_state_t *state, void *user_data) {
+  	if (get_mods() & MOD_MASK_GUI) {
+		switch (state->count) {
+			case 1:
+				SEND_STRING(SS_LCMD("v"));
+				break;
+			case 2:
+				SEND_STRING(SS_HYPER("v"));
+				break;
+		}
+	} else {
+		tap_code(KC_V);
+	}
+}
+
+// (TD) Tap Dance definitions:
+tap_dance_action_t tap_dance_actions[] = {
+    [TD_V] = ACTION_TAP_DANCE_FN(hyper_paste),
+};
+
 void process_nav_key(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
         if (get_mods() & MOD_MASK_SHIFT) {
@@ -55,14 +79,15 @@ void process_nav_key(uint16_t keycode, keyrecord_t *record) {
 			tap_code(keycode);
 			del_mods(MOD_MASK_CAG);
         } else {
-			add_mods(MOD_MASK_CTRL);
+			add_mods(MOD_MASK_GUI);,
 			tap_code(keycode);
-			del_mods(MOD_MASK_CTRL);
+			del_mods(MOD_MASK_GUI);
         }
     }
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+	mod_state = get_mods();
     switch (keycode) {
 		case NAV1:  
             process_nav_key(KC_1, record);
@@ -84,17 +109,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
 		case SNIPT: 
 			if (record->event.pressed) {
-				if (get_mods() & MOD_MASK_SHIFT) {
+				if (mod_state & MOD_MASK_SHIFT) {
+					del_mods(MOD_MASK_SHIFT);
 					SEND_STRING(SS_LCMD(SS_LSFT("2"))); // ARC
+					set_mods(mod_state);
 				} else {
 					SEND_STRING(SS_LCMD(SS_LCTL(SS_LSFT("4")))); // MAC
 				}
 			} 
 			break;
+		case KC_V:
+			if (record->event.pressed) {
+				if (mod_state & MOD_MASK_SHIFT) {
+					del_mods(MOD_MASK_SHIFT);
+					SEND_STRING(SS_LCTL(SS_LOPT(","))); // switch layout
+					set_mods(mod_state);
+				} else {
+					SEND_STRING(SS_LCTL(SS_LOPT("\n"))); // switch main window
+				}
+			}
+			break;
 		case AMSW:
 			if (record->event.pressed) {
-				if (get_mods() & MOD_MASK_SHIFT) {
-					SEND_STRING(SS_LCTL(SS_LOPT("<"))); // switch layout
+				if (mod_state & MOD_MASK_SHIFT) {
+					del_mods(MOD_MASK_SHIFT);
+					SEND_STRING(SS_LCTL(SS_LOPT(","))); // switch layout
+					set_mods(mod_state);
 				} else {
 					SEND_STRING(SS_LCTL(SS_LOPT("\n"))); // switch main window
 				}
@@ -103,33 +143,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case AMIN: 
 			if (record->event.pressed) {
 				add_mods(MOD_MASK_CA);
-				tap_code(KC_UP);
+				tap_code(KC_RIGHT);
 				del_mods(MOD_MASK_CA);
 			}
 			break;
 		case AMDE:
 			if (record->event.pressed) {
 				add_mods(MOD_MASK_CA);
-				tap_code(KC_DOWN);
+				tap_code(KC_LEFT);,
 				del_mods(MOD_MASK_CA);
 			}
 			break;
-		}	
-
-	// Macro + tap dance fo KC_V
-	if (record->event.pressed) {
-		static bool tapped = false;
-		static uint16_t tap_timer = 0;
-		
-		if (keycode == KC_V && (get_mods() & MOD_MASK_GUI)) {
-			if (tapped && !timer_expired(record->event.time, tap_timer)) {
-				SEND_STRING(SS_HYPER("v"));
-			}
-			tapped = true;
-			tap_timer = record->event.time + TAPPING_TERM;
-		} else {
-			tapped = false;
-		}
 	}
     return true;
 };
@@ -141,7 +165,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
   	*/     KC_TAB,     KC_A,     KC_S,     KC_D,     KC_F,     KC_G,                            KC_H,     KC_J,     KC_K,     KC_L,  KC_SCLN, KC_QUOTE, \
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
-  	*/    KC_LSFT,     KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,                            KC_N,     KC_M, KC_COMMA,   KC_DOT, KC_SLASH,  KC_HYPR, \
+  	*/    KC_LSFT,     KC_Z,     KC_X,     KC_C,     TD_V,     KC_B,                            KC_N,     KC_M, KC_COMMA,   KC_DOT, KC_SLASH,  KC_HYPR, \
   	/* ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╮  ╭━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
   	*/                                            KC_LOPT,  KC_LCMD, L1_THUMB,    R1_THUMB, R2_THUMB,  KC_RCTL									   	    \
   	//      								   ╰─━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯  ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
