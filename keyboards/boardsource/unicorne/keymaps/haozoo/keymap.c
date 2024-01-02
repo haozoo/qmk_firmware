@@ -95,20 +95,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case AMSW:
 			if (record->event.pressed) {
 				if (mod_state & MOD_MASK_SHIFT) {
-					tap_code(C(A(KC_COMMA)));
+					tap_code16(C(A(KC_COMMA)));
 				} else {
-					tap_code(C(A(KC_ENT)));
+					tap_code16(C(A(KC_ENT)));
 				}
 			}
 			break;
 		case AMIN: 
 			if (record->event.pressed) {
-				tap_code(C(A(KC_RIGHT)));
+				tap_code16(C(A(KC_RIGHT)));
 			}
 			break;
 		case AMDE:
 			if (record->event.pressed) {
-				tap_code(C(A(KC_LEFT)));
+				tap_code16(C(A(KC_LEFT)));
 			}
 			break;
 		case KC_V:
