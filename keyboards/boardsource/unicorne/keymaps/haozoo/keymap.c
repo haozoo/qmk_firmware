@@ -52,24 +52,25 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     NULL
 };
 
-void hyper_paste(tap_dance_state_t *state, void *user_data) {
-  	if (get_mods() & MOD_MASK_GUI) {
-		switch (state->count) {
-			case 1:
-				SEND_STRING(SS_LCMD("v"));
-				break;
-			case 2:
-				SEND_STRING(SS_HYPER("v"));
-				break;
-		}
-	} else {
-		tap_code(KC_V);
-	}
-}
+// void hyper_paste(tap_dance_state_t *state, void *user_data) {
+//   	if (get_mods() & MOD_MASK_GUI) {
+// 		switch (state->count) {
+// 			case 1:
+// 				SEND_STRING(SS_LCMD("v"));
+// 				break;
+// 			case 2:
+// 				SEND_STRING(SS_HYPER("v"));
+// 				break;
+// 		}
+// 	} else {
+// 		tap_code(KC_V);
+// 	}
+// }
 
 // (TD) Tap Dance definitions:
 tap_dance_action_t tap_dance_actions[] = {
-    [TD_V] = ACTION_TAP_DANCE_FN(hyper_paste),
+	[TD_V] = ACTION_TAP_DANCE_DOUBLE(LCMD(KC_V), HYPR(KC_V))
+    // [TD_V] = ACTION_TAP_DANCE_FN(hyper_paste),
 };
 
 void process_nav_key(uint16_t keycode, keyrecord_t *record) {
@@ -123,10 +124,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			if (record->event.pressed) {
 				if (mod_state & MOD_MASK_SHIFT) {
 					del_mods(MOD_MASK_SHIFT);
-					SEND_STRING(SS_LCTL(SS_LOPT(","))); // switch layout
+					tap_code(TD(TD_V));
 					set_mods(mod_state);
 				} else {
-					SEND_STRING(SS_LCTL(SS_LOPT("\n"))); // switch main window
+					tap_code(KC_V);
 				}
 			}
 			break;
@@ -166,7 +167,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
   	*/     KC_TAB,     KC_A,     KC_S,     KC_D,     KC_F,     KC_G,                            KC_H,     KC_J,     KC_K,     KC_L,  KC_SCLN, KC_QUOTE, \
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
-  	*/    KC_LSFT,     KC_Z,     KC_X,     KC_C, TD(TD_V),     KC_B,                            KC_N,     KC_M, KC_COMMA,   KC_DOT, KC_SLASH,  KC_HYPR, \
+  	*/    KC_LSFT,     KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,                            KC_N,     KC_M, KC_COMMA,   KC_DOT, KC_SLASH,  KC_HYPR, \
   	/* ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╮  ╭━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
   	*/                                            KC_LOPT,  KC_LCMD, L1_THUMB,    R1_THUMB, R2_THUMB,  KC_RCTL									   	    \
   	//      								   ╰─━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯  ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
