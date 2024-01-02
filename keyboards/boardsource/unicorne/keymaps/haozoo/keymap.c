@@ -70,8 +70,7 @@ void hyper_paste(tap_dance_state_t *state, void *user_data) {
 
 // (TD) Tap Dance definitions:
 tap_dance_action_t tap_dance_actions[] = {
-	[TD_V] = ACTION_TAP_DANCE_DOUBLE(LCMD(KC_V), HYPR(KC_V))
-    // [TD_V] = ACTION_TAP_DANCE_FN(hyper_paste),
+    [TD_V] = ACTION_TAP_DANCE_FN(hyper_paste),
 };
 
 void process_nav_key(uint16_t keycode, keyrecord_t *record) {
@@ -121,17 +120,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				}
 			} 
 			break;
-		case KC_V:
-			if (record->event.pressed) {
-				if (mod_state & MOD_MASK_GUI) {
-					del_mods(MOD_MASK_GUI);
-					tap_code16(TD(TD_V));
-					set_mods(mod_state);
-				} else {
-					tap_code(KC_V);
-				}
-			}
-			break;
 		case AMSW:
 			if (record->event.pressed) {
 				if (mod_state & MOD_MASK_SHIFT) {
@@ -168,7 +156,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
   	*/     KC_TAB,     KC_A,     KC_S,     KC_D,     KC_F,     KC_G,                            KC_H,     KC_J,     KC_K,     KC_L,  KC_SCLN, KC_QUOTE, \
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
-  	*/    KC_LSFT,     KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,                            KC_N,     KC_M, KC_COMMA,   KC_DOT, KC_SLASH,  KC_HYPR, \
+  	*/    KC_LSFT,     KC_Z,     KC_X,     KC_C, TD(TD_V),     KC_B,                            KC_N,     KC_M, KC_COMMA,   KC_DOT, KC_SLASH,  KC_HYPR, \
   	/* ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╮  ╭━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
   	*/                                            KC_LOPT,  KC_LCMD, L1_THUMB,    R1_THUMB, R2_THUMB,  KC_RCTL									   	    \
   	//      								   ╰─━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯  ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
