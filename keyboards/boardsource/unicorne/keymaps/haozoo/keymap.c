@@ -29,7 +29,7 @@ enum custom_keycodes {
 	AMDE,   // Amethyst decrease main window's horizontal width
 };
 
-// Combos 
+// Comboes 
 const uint16_t PROGMEM alfred_search_combo[] = {KC_SPC, KC_BSPC, COMBO_END};
 const uint16_t PROGMEM wooshy_search_combo[] = {KC_B, KC_N, COMBO_END};
 combo_t key_combos[] = {
@@ -38,26 +38,23 @@ combo_t key_combos[] = {
 };
 
 // Key Overrides AKA mod-morphs: 
-const key_override_t backspace_override = ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, LOPT(KC_BSPC));
-const key_override_t deleteall_override = ko_make_basic(MOD_MASK_SHIFT, KC_DEL, LOPT(KC_DEL));
-const key_override_t grave_esc_override = ko_make_basic(MOD_MASK_SHIFT, KC_ESC, KC_GRV);
+const key_override_t bspace_override = ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, LOPT(KC_BSPC));
+const key_override_t delete_override = ko_make_basic(MOD_MASK_SHIFT, KC_DEL, LOPT(KC_DEL));
+const key_override_t grvesc_override = ko_make_basic(MOD_MASK_SHIFT, KC_ESC, KC_GRV);
 const key_override_t **key_overrides = (const key_override_t *[]){
-    &backspace_override,
-	&deleteall_override,
-	&grave_esc_override,
+    &bspace_override,
+	&delete_override,
+	&grvesc_override,
     NULL
 };
 
+// Macros
 void process_nav_key(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
         if (get_mods() & MOD_MASK_SHIFT) {
-			add_mods(MOD_MASK_CAG);
-			tap_code(keycode);
-			del_mods(MOD_MASK_CAG);
+			tap_code16(C(A(G(keycode))));
         } else {
-			add_mods(MOD_MASK_GUI);
-			tap_code(keycode);
-			del_mods(MOD_MASK_GUI);
+			tap_code16(G(keycode));
         }
     }
 }
@@ -89,37 +86,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case SNIPT: 
 			if (record->event.pressed) {
 				if (mod_state & MOD_MASK_SHIFT) {
-					del_mods(MOD_MASK_SHIFT);
-					SEND_STRING(SS_LCMD(SS_LSFT("2"))); // ARC
-					set_mods(mod_state);
+					tap_code16(S(G(KC_2)));
 				} else {
-					SEND_STRING(SS_LCMD(SS_LCTL(SS_LSFT("4")))); // MAC
+					tap_code16(C(S(G(KC_4))));
 				}
 			} 
 			break;
 		case AMSW:
 			if (record->event.pressed) {
 				if (mod_state & MOD_MASK_SHIFT) {
-					del_mods(MOD_MASK_SHIFT);
-					SEND_STRING(SS_LCTL(SS_LOPT(","))); // switch layout
-					set_mods(mod_state);
+					tap_code(C(A(KC_COMMA)));
 				} else {
-					SEND_STRING(SS_LCTL(SS_LOPT("\n"))); // switch main window
+					tap_code(C(A(KC_ENT)));
 				}
 			}
 			break;
 		case AMIN: 
 			if (record->event.pressed) {
-				add_mods(MOD_MASK_CA);
-				tap_code(KC_RIGHT);
-				del_mods(MOD_MASK_CA);
+				tap_code(C(A(KC_RIGHT)));
 			}
 			break;
 		case AMDE:
 			if (record->event.pressed) {
-				add_mods(MOD_MASK_CA);
-				tap_code(KC_LEFT);
-				del_mods(MOD_MASK_CA);
+				tap_code(C(A(KC_LEFT)));
 			}
 			break;
 		case KC_V:
