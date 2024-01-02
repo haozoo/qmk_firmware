@@ -65,6 +65,8 @@ void process_nav_key(uint16_t keycode, keyrecord_t *record) {
 uint8_t mod_state;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	mod_state = get_mods();
+	static bool v_tapped = false;
+
     switch (keycode) {
 		case NAV1:  
             process_nav_key(KC_1, record);
@@ -122,22 +124,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			break;
 		case KC_V:
 			if (record->event.pressed) {
-				static bool tapped = false;
 				static uint16_t tap_timer = 0;
 				if (mod_state & MOD_MASK_GUI) {
-					if (tapped && !timer_expired(record->event.time, tap_timer)) {
+					if (v_tapped && !timer_expired(record->event.time, tap_timer)) {
 						tap_code16(HYPR(KC_V));
 					}
-					tapped = true;
+					v_tapped = true;
 					tap_timer = record->event.time + TAPPING_TERM;
 				} else {
 					tap_code(KC_V);
-					tapped = false; 
+					v_tapped = false; 
 				}
 			}
 			break;
 		default:
-			tapped = false; 
+			v_tapped = false; 
 	}
     return true;
 };
