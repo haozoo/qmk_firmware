@@ -79,7 +79,7 @@ void process_nav_key(uint16_t keycode, keyrecord_t *record) {
 			tap_code(keycode);
 			del_mods(MOD_MASK_CAG);
         } else {
-			add_mods(MOD_MASK_GUI);,
+			add_mods(MOD_MASK_GUI);
 			tap_code(keycode);
 			del_mods(MOD_MASK_GUI);
         }
@@ -150,7 +150,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case AMDE:
 			if (record->event.pressed) {
 				add_mods(MOD_MASK_CA);
-				tap_code(KC_LEFT);,
+				tap_code(KC_LEFT);
 				del_mods(MOD_MASK_CA);
 			}
 			break;
