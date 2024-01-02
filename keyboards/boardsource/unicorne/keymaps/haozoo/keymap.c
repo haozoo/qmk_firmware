@@ -95,7 +95,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case AMSW:
 			if (record->event.pressed) {
 				if (mod_state & MOD_MASK_SHIFT) {
+					del_mods(MOD_MASK_SHIFT);
 					tap_code16(C(A(KC_COMMA)));
+					set_mods(mod_state);
 				} else {
 					tap_code16(C(A(KC_ENT)));
 				}
@@ -121,7 +123,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 					v_tapped = true;
 					tap_timer = record->event.time + TAPPING_TERM;
 				} else {
-					tap_code(KC_V);
 					v_tapped = false; 
 				}
 			}
