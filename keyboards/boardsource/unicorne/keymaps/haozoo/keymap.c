@@ -64,8 +64,8 @@ void hyper_paste(tap_dance_state_t *state, void *user_data) {
         }
     } else {
 		tap_code(KC_V); 
+		reset_tap_dance(state);
     }
-    reset_tap_dance(state);
 }
 
 // (TD) Tap Dance definitions:
