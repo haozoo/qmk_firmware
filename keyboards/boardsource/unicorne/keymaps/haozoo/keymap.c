@@ -52,7 +52,7 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     NULL
 };
 
-void hyper_paste(qk_tap_dance_state_t *state, void *user_data) {
+void hyper_paste(tap_dance_state_t *state, void *user_data) {
   	if (get_mods() & MOD_MASK_GUI) {
 		switch (state->count) {
 			case 1:
