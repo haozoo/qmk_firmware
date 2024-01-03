@@ -9,7 +9,7 @@
 #define SS_HYPER(KC) SS_LCMD(SS_LCTL(SS_LOPT(SS_LSFT(KC))))
 
 #define L1_THUMB LT(_NUMS, KC_SPC)
-#define R1_THUMB LT(_MOVE, KC_BSPC)
+#define R1_THUMB LT(_MOVE, BSPC)
 #define R2_THUMB LT(_SYMS, KC_ENT)
 
 #define LHS_WORD LOPT(KC_LEFT)
@@ -40,11 +40,9 @@ combo_t key_combos[] = {
 };
 
 // Key Overrides AKA mod-morphs: 
-const key_override_t bspace_override = ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, LOPT(KC_BSPC));
 const key_override_t delete_override = ko_make_basic(MOD_MASK_SHIFT, KC_DEL, LOPT(KC_DEL));
 const key_override_t grvesc_override = ko_make_basic(MOD_MASK_SHIFT, KC_ESC, KC_GRV);
 const key_override_t **key_overrides = (const key_override_t *[]){
-    &bspace_override,
 	&delete_override,
 	&grvesc_override,
     NULL
@@ -86,6 +84,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case NAV6:
             process_nav_key(KC_6, record);
             break;
+		case BSPC: 
+			if (record->event.pressed) {
+				if (mod_state & MOD_MASK_SHIFT) {
+					tap_code16(A(KC_BSPC));
+				} else {
+					tap_code(KC_BSPC);
+				}
+			} 
+			break;
 		case SNIPT: 
 			if (record->event.pressed) {
 				if (mod_state & MOD_MASK_SHIFT) {
