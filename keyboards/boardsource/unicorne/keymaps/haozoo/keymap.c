@@ -29,6 +29,7 @@ enum custom_keycodes {
 	NAVD,   // Amethyst decrease main window's horizontal width + go to below tab
 	TD_V,   // Alfred paste tap dance
 	JIGG,   // Jiggles the mouse 
+	BSPC,   // Custom backspace key
 };
 
 // Comboes 
@@ -170,7 +171,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 					token = INVALID_DEFERRED_TOKEN;
 					report = (report_mouse_t){};  
 					host_mouse_send(&report);
-				} else if (keycode == JIGGLE) {
+				} else if (keycode == JIGG) {
 					uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
 						static const int8_t deltas[32] = {
 							0, -1, -2, -2, -3, -3, -4, -4, -4, -4, -3, -3, -2, -2, -1, 0,
