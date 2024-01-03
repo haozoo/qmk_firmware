@@ -142,7 +142,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 						tap_code16(HYPR(KC_V));
 						v_tapped = false;
 					} else {
-						deferred_token token = defer_exec(TAPPING_TERM, paste_callback, NULL);
+						defer_exec(TAPPING_TERM, paste_callback, NULL);
 						v_tapped = true;
 					}
 					tap_timer = record->event.time + TAPPING_TERM;
@@ -156,7 +156,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			v_tapped = false; 
 	}
     return true;
-};
+};	
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[_BASE] = LAYOUT_split_3x6_3(                                                                                                                       \
