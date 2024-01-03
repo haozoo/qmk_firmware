@@ -25,13 +25,13 @@ enum custom_keycodes {
 	NAV5,
 	NAV6,
 	AMSW,   // Amethyst switch layouts + switch main window 
-	AMIN, 	// Amethyst increase main window's horizontal width 
-	AMDE,   // Amethyst decrease main window's horizontal width
+	NAVU, 	// Amethyst increase main window's horizontal width + go to above tab
+	NAVD,   // Amethyst decrease main window's horizontal width + go to below tab
 	TD_V,
 };
 
 // Comboes 
-const uint16_t PROGMEM alfred_search_combo[] = {KC_SPC, KC_BSPC, COMBO_END};
+const uint16_t PROGMEM alfred_search_combo[] = {L1_THUMB, R1_THUMB, COMBO_END};
 const uint16_t PROGMEM wooshy_search_combo[] = {KC_B, KC_N, COMBO_END};
 combo_t key_combos[] = {
     COMBO(alfred_search_combo, LCMD(KC_SPC)), // TODO: NEEDS FIXING
@@ -49,6 +49,16 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     NULL
 };
 
+uint8_t mod_state;
+static bool v_tapped = false;
+
+uint32_t paste_callback(uint32_t trigger_time, void *cb_arg) {
+	if (v_tapped) {
+		tap_code16(G(KC_V));
+	}
+    return 0;
+}
+
 // Macros
 void process_nav_key(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
@@ -60,10 +70,8 @@ void process_nav_key(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
-uint8_t mod_state;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	mod_state = get_mods();
-	static bool v_tapped = false;
 
     switch (keycode) {
 		case NAV1:  
@@ -104,14 +112,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				}
 			}
 			break;
-		case AMIN: 
+		case NAVU: 
 			if (record->event.pressed) {
-				tap_code16(C(A(KC_RIGHT)));
+				if (mod_state & MOD_MASK_SHIFT) {
+					del_mods(MOD_MASK_SHIFT);
+					tap_code16(C(A(KC_RIGHT)));
+					set_mods(mod_state);
+				} else {
+					tap_code16(A(G(KC_UP)));
+				}
 			}
 			break;
-		case AMDE:
+		case NAVD:
 			if (record->event.pressed) {
-				tap_code16(C(A(KC_LEFT)));
+				if (mod_state & MOD_MASK_SHIFT) {
+					del_mods(MOD_MASK_SHIFT);
+					tap_code16(C(A(KC_LEFT)));
+					set_mods(mod_state);
+				} else {
+					tap_code16(A(G(KC_DOWN)));
+				}
 			}
 			break;
 		case TD_V:
@@ -120,8 +140,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				if (mod_state & MOD_MASK_GUI) {
 					if (v_tapped && !timer_expired(record->event.time, tap_timer)) {
 						tap_code16(HYPR(KC_V));
+						v_tapped = false;
+					} else {
+						deferred_token token = defer_exec(TAPPING_TERM, paste_callback, NULL);
+						v_tapped = true;
 					}
-					v_tapped = true;
 					tap_timer = record->event.time + TAPPING_TERM;
 				} else {
 					tap_code(KC_V);
@@ -151,9 +174,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	/* ╭━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━╮                      ╭━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━╮
   	*/   KC_GRAVE,     KC_1,     KC_2,     KC_3,     KC_4,     KC_5,                            KC_6,     KC_7,     KC_8,     KC_9,     KC_0,   KC_DEL, \
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
-  	*/    _______,    SNIPT,     AMIN,     NAV1,     NAV2,     NAV3,                         XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_BSLS,  KC_MINS,   KC_EQL, \
+  	*/    _______,    SNIPT,     NAVU,     NAV1,     NAV2,     NAV3,                         XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_BSLS,  KC_MINS,   KC_EQL, \
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
-  	*/    _______,     AMSW,     AMDE,     NAV4,     NAV5,     NAV6,                         XXXXXXX,  XXXXXXX, KC_COMMA,   KC_DOT, KC_SLASH,  _______, \
+  	*/    _______,     AMSW,     NAVD,     NAV4,     NAV5,     NAV6,                         XXXXXXX,  XXXXXXX, KC_COMMA,   KC_DOT, KC_SLASH,  _______, \
   	/* ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╮  ╭━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
   	*/                                            _______,  _______,  _______,     _______,  _______,  _______									   	    \
   	//      								   ╰─━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯  ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
