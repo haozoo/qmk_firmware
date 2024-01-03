@@ -14,24 +14,20 @@ bool oled_task_kb(void) {
     if (!oled_task_user()) {
         return false;
     }
-    if (is_keyboard_master()) {
-        switch (get_highest_layer(layer_state)) {
-            case 0:
-                oled_write_raw(layer_zero, sizeof(layer_zero));
-                break;
-            case 1:
-                oled_write_raw(layer_one, sizeof(layer_one));
-                break;
-            case 2:
-                oled_write_raw(layer_two, sizeof(layer_two));
-                break;
-            case 3:
-                oled_write_raw(layer_three, sizeof(layer_three));
-                break;
+    switch (get_highest_layer(layer_state)) {
+        case 0:
+            oled_write_raw(layer_zero, sizeof(layer_zero));
+            break;
+        case 1:
+            oled_write_raw(layer_one, sizeof(layer_one));
+            break;
+        case 2:
+            oled_write_raw(layer_two, sizeof(layer_two));
+            break;
+        case 3:
+            oled_write_raw(layer_three, sizeof(layer_three));
+            break;
         }
-    } else {
-        oled_write_raw(logo, sizeof(logo));
-    }
     return false;
 }
 #endif
