@@ -49,13 +49,9 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     NULL
 };
 
-uint8_t mod_state;
-static bool v_tapped = false;
-
+// Past callback for tap dance
 uint32_t paste_callback(uint32_t trigger_time, void *cb_arg) {
-	if (v_tapped) {
-		tap_code16(G(KC_V));
-	}
+	tap_code16(G(KC_V));
     return 0;
 }
 
@@ -70,8 +66,11 @@ void process_nav_key(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
+uint8_t mod_state;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	mod_state = get_mods();
+	static deferred_token token = NULL; 
+	static bool v_tapped = false;
 
     switch (keycode) {
 		case NAV1:  
@@ -140,9 +139,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				if (mod_state & MOD_MASK_GUI) {
 					if (v_tapped && !timer_expired(record->event.time, tap_timer)) {
 						tap_code16(HYPR(KC_V));
+						if (token != NULL) {
+							cancel_deferred_exec(token);
+							token = NULL; 
+						}
 						v_tapped = false;
 					} else {
-						defer_exec(TAPPING_TERM, paste_callback, NULL);
+						token = defer_exec(TAPPING_TERM, paste_callback, NULL);
 						v_tapped = true;
 					}
 					tap_timer = record->event.time + TAPPING_TERM;
