@@ -40,9 +40,11 @@ combo_t key_combos[] = {
 };
 
 // Key Overrides AKA mod-morphs: 
+const key_override_t bspace_override = ko_make_basic(MOD_MASK_SHIFT, R1_THUMB, LOPT(KC_BSPC));
 const key_override_t delete_override = ko_make_basic(MOD_MASK_SHIFT, KC_DEL, LOPT(KC_DEL));
 const key_override_t grvesc_override = ko_make_basic(MOD_MASK_SHIFT, KC_ESC, KC_GRV);
 const key_override_t **key_overrides = (const key_override_t *[]){
+	&bspace_override,
 	&delete_override,
 	&grvesc_override,
     NULL
