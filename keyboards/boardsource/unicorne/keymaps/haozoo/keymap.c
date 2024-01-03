@@ -69,7 +69,7 @@ void process_nav_key(uint16_t keycode, keyrecord_t *record) {
 uint8_t mod_state;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	mod_state = get_mods();
-	static deferred_token token = NULL; 
+	static deferred_token token = 0; 
 	static bool v_tapped = false;
 
     switch (keycode) {
@@ -139,9 +139,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				if (mod_state & MOD_MASK_GUI) {
 					if (v_tapped && !timer_expired(record->event.time, tap_timer)) {
 						tap_code16(HYPR(KC_V));
-						if (token != NULL) {
+						if (token != 0) {
 							cancel_deferred_exec(token);
-							token = NULL; 
+							token = 0; 
 						}
 						v_tapped = false;
 					} else {
