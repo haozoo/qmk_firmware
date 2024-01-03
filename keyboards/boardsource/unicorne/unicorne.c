@@ -4,9 +4,6 @@
 
 #ifdef OLED_ENABLE
 oled_rotation_t oled_init_kb(oled_rotation_t rotation) {
-    if (!is_keyboard_master()) {
-        return OLED_ROTATION_180;
-    }
     return rotation;
 }
 
