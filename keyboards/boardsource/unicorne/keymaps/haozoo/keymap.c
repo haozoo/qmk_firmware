@@ -9,7 +9,7 @@
 #define SS_HYPER(KC) SS_LCMD(SS_LCTL(SS_LOPT(SS_LSFT(KC))))
 
 #define L1_THUMB LT(_NUMS, KC_SPC)
-#define R1_THUMB LT(_MOVE, BSPC)
+#define R1_THUMB LT(_MOVE, KC_BSPC)
 #define R2_THUMB LT(_SYMS, KC_ENT)
 
 #define LHS_WORD LOPT(KC_LEFT)
@@ -29,7 +29,6 @@ enum custom_keycodes {
 	NAVD,   // Amethyst decrease main window's horizontal width + go to below tab
 	TD_V,   // Alfred paste tap dance
 	JIGG,   // Jiggles the mouse 
-	BSPC,   // Custom backspace key
 };
 
 // Comboes 
@@ -63,7 +62,7 @@ void process_nav_key(uint16_t keycode, keyrecord_t *record) {
 uint8_t mod_state;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	mod_state = get_mods();
-	static deferred_token token = 0; 
+	static deferred_token token = INVALID_DEFERRED_TOKEN; 
 	static bool v_tapped = false;
 
     switch (keycode) {
@@ -85,15 +84,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case NAV6:
             process_nav_key(KC_6, record);
             break;
-		case BSPC: 
-			if (record->event.pressed) {
-				if (mod_state & MOD_MASK_SHIFT) {
-					tap_code16(A(KC_BSPC));
-				} else {
-					tap_code(KC_BSPC);
-				}
-			} 
-			break;
 		case SNIPT: 
 			if (record->event.pressed) {
 				if (mod_state & MOD_MASK_SHIFT) {
@@ -142,9 +132,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				if (mod_state & MOD_MASK_GUI) {
 					if (v_tapped && !timer_expired(record->event.time, tap_timer)) {
 						tap_code16(HYPR(KC_V));
-						if (token != 0) {
+						if (token) {
 							cancel_deferred_exec(token);
-							token = 0; 
+							token = INVALID_DEFERRED_TOKEN; 
 						}
 						v_tapped = false;
 					} else {
