@@ -30,6 +30,15 @@ enum custom_keycodes {
 	NAVD,   // Amethyst decrease main window's horizontal width + go to below tab
 	TD_V,   // Alfred paste tap dance
 	JIGG,   // Jiggles the mouse 
+	ACV1,   // Alfred CMD + V navigation
+	ACV2,
+	ACV3,
+	ACV4,
+	ACV5,
+	ACV6,
+	ACV7,
+	ACV8,
+	ACV9,
 };
 
 // Comboes 
@@ -68,7 +77,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	static deferred_token token = INVALID_DEFERRED_TOKEN; 
 	static bool v_tapped = false;
 
-    switch (keycode) {
+    switch (keycode) 
 		case NAV1:  
             process_nav_key(KC_1, record);
             break;
@@ -180,9 +189,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				token = defer_exec(1, jiggler_callback, NULL); 
 				}
 			}
+			break;
+		case ACV1:
+        case ACV2:
+        case ACV3:
+        case ACV4:
+        case ACV5:
+        case ACV6:
+        case ACV7:
+        case ACV8:
+        case ACV9:
+            if (record->event.pressed) {
+                tap_code16(G(keycode - ACV1 + KC_1));
+            } else {
+                clear_oneshot_layer_state(ONESHOT_PRESSED);
+            }
+            break;
+        case KC_ESC:
+            if (IS_LAYER_ON(_ALFR)) {
+                clear_oneshot_layer_state(ONESHOT_PRESSED); 
+            }
+            break;
 		default:
 			v_tapped = false; 
-	}
 
 	if (IS_LAYER_ON(_ALFR) && !record->event.pressed && keycode != TD_V) {
 		clear_oneshot_layer_state(ONESHOT_PRESSED); 
