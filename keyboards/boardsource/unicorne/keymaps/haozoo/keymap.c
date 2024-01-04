@@ -139,8 +139,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 							cancel_deferred_exec(token);
 							token = INVALID_DEFERRED_TOKEN; 
 						}
-						set_oneshot_layer(_ALFR, ONESHOT_START);
-                    	clear_oneshot_layer_state(ONESHOT_PRESSED);  						
+						set_oneshot_layer(_ALFR, ONESHOT_START); 						
 						v_tapped = false;
 					} else {
 						uint32_t paste_callback(uint32_t trigger_time, void *cb_arg) {
@@ -183,6 +182,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			}
 		default:
 			v_tapped = false; 
+	}
+
+	if (IS_LAYER_ON(_ALFR) && !record->event.pressed) {
+		clear_oneshot_layer_state(ONESHOT_PRESSED); 
 	}
     return true;
 };	
