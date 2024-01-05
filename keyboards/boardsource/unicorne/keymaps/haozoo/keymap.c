@@ -212,10 +212,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
 		default:
 			v_tapped = false; 
-
-	if (IS_LAYER_ON(_ALFR) && !record->event.pressed && keycode != TD_V) {
-		clear_oneshot_layer_state(ONESHOT_PRESSED); 
-	}
+	
     return true;
 };	
 
