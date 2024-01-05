@@ -77,7 +77,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	static deferred_token token = INVALID_DEFERRED_TOKEN; 
 	static bool v_tapped = false;
 
-    switch (keycode) 
+    switch (keycode) {
 		case NAV1:  
             process_nav_key(KC_1, record);
             break;
@@ -212,7 +212,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
 		default:
 			v_tapped = false; 
-	
+	}
     return true;
 };	
 
