@@ -64,11 +64,9 @@ const key_override_t **key_overrides = (const key_override_t *[]){
 void process_nav_key(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
         if (get_mods() & MOD_MASK_SHIFT) {
-			tap_code16(C(A(G(keycode))));
 			tap_code16(C(A(KC_ENT)));
         } else {
 			tap_code16(C(A(G(KC_1))));
-			tap_code16(C(A(KC_ENT)));
 			tap_code16(G(keycode));
         }
     }
