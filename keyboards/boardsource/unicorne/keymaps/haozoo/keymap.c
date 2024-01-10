@@ -66,7 +66,6 @@ void process_nav_key(uint16_t keycode, keyrecord_t *record) {
         if (get_mods() & MOD_MASK_SHIFT) {
 			tap_code16(C(A(G(keycode))));
         } else {
-			tap_code16(C(S(A(G(KC_1)))));
 			tap_code16(G(keycode));
         }
     }
