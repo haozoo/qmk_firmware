@@ -81,6 +81,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	static bool v_tapped = false;
 
     switch (keycode) {
+		case SHFT: 
+			if (record->event.pressed) {
+				register_code(KC_LSFT);
+			} else {
+				unregister_code(KC_LSFT);
+			}
 		case NAV1:  
         case NAV2:
         case NAV3:
