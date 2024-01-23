@@ -199,7 +199,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 };	
 
-float game_off[][2] = SONG(GUITAR_SOUND);
+float guitar[][2] = SONG(GUITAR_SOUND);
+float violin[][2] = SONG(VIOLIN_SOUND);
+float major[][2] = SONG(MAJOR_SOUND);
 
 // Layers
 layer_state_t layer_state_set_user(layer_state_t state) {
@@ -208,12 +210,18 @@ layer_state_t layer_state_set_user(layer_state_t state) {
         break;
     case _NUMS:
 		#ifdef AUDIO_ENABLE
-		PLAY_SONG(game_off);
+		PLAY_SONG(guitar);
 		#endif
         break;
     case _SYMS:
+		#ifdef AUDIO_ENABLE
+		PLAY_SONG(violin);
+		#endif
         break;
     case _MOVE:
+		#ifdef AUDIO_ENABLE
+		PLAY_SONG(major);
+		#endif
         break;
 	case _FKEY:
 		break;

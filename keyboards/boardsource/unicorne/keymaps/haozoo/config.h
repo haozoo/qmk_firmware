@@ -1,3 +1,2 @@
-#define AUDIO_CLICKY
 #define BACKLIGHT_DEFAULT_ON false
 #define ENABLE_COMPILE_KEYCODE
