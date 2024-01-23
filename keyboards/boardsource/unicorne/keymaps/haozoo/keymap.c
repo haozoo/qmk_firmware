@@ -108,29 +108,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				}
 			}
 			break;
-		case NAVU: 
+		case JIGG: // Jiggle Macro 
 			if (record->event.pressed) {
-				if (mod_state & MOD_MASK_SHIFT) {
-					del_mods(MOD_MASK_SHIFT);
-					tap_code16(C(A(KC_RIGHT)));
-					set_mods(mod_state);
-				} else {
-					tap_code16(A(G(KC_UP)));
+				static deferred_token token = INVALID_DEFERRED_TOKEN;
+				static report_mouse_t report = {0};
+				if (token) {
+					cancel_deferred_exec(token);
+					token = INVALID_DEFERRED_TOKEN;
+					report = (report_mouse_t){};  
+					host_mouse_send(&report);
+				} else if (keycode == JIGG) {
+					uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
+						static const int8_t deltas[32] = {
+							0, -1, -2, -2, -3, -3, -4, -4, -4, -4, -3, -3, -2, -2, -1, 0,
+							0, 1, 2, 2, 3, 3, 4, 4, 4, 4, 3, 3, 2, 2, 1, 0};
+						static uint8_t phase = 0;
+						report.x = deltas[phase];
+						report.y = deltas[(phase + 8) & 31];
+						phase = (phase + 1) & 31;
+						host_mouse_send(&report);
+						return 16;  
+					}
+				token = defer_exec(1, jiggler_callback, NULL); 
 				}
 			}
-			break;
-		case NAVD:
-			if (record->event.pressed) {
-				if (mod_state & MOD_MASK_SHIFT) {
-					del_mods(MOD_MASK_SHIFT);
-					tap_code16(C(A(KC_LEFT)));
-					set_mods(mod_state);
-				} else {
-					tap_code16(A(G(KC_DOWN)));
-				}
-			}
-			break;
-		case TD_V:
+			break;		
+		case TD_V: // Paste Tap dance + Macro
 			if (record->event.pressed) {
 				static uint16_t tap_timer = 0;
 				if (mod_state & MOD_MASK_GUI) {
@@ -154,31 +157,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				} else {
 					tap_code(KC_V);
 					v_tapped = false; 
-				}
-			}
-			break;
-		case JIGG:
-			if (record->event.pressed) {
-				static deferred_token token = INVALID_DEFERRED_TOKEN;
-				static report_mouse_t report = {0};
-				if (token) {
-					cancel_deferred_exec(token);
-					token = INVALID_DEFERRED_TOKEN;
-					report = (report_mouse_t){};  
-					host_mouse_send(&report);
-				} else if (keycode == JIGG) {
-					uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
-						static const int8_t deltas[32] = {
-							0, -1, -2, -2, -3, -3, -4, -4, -4, -4, -3, -3, -2, -2, -1, 0,
-							0, 1, 2, 2, 3, 3, 4, 4, 4, 4, 3, 3, 2, 2, 1, 0};
-						static uint8_t phase = 0;
-						report.x = deltas[phase];
-						report.y = deltas[(phase + 8) & 31];
-						phase = (phase + 1) & 31;
-						host_mouse_send(&report);
-						return 16;  
-					}
-				token = defer_exec(1, jiggler_callback, NULL); 
 				}
 			}
 			break;
