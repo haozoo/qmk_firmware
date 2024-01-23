@@ -80,6 +80,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	static bool v_tapped = false;
 
     switch (keycode) {
+		case KC_BSPC: 
+            if (record->event.pressed) {
+				if (mod_state & MOD_MASK_SHIFT) {
+					del_mods(MOD_MASK_SHIFT);
+					tap_code16(A(KC_BSPC));
+					set_mods(mod_state);
+				} else {
+					tap_code16(KC_BSPC);
+				}
+			}
+            break;
 		case NAV1:  
         case NAV2:
         case NAV3:
