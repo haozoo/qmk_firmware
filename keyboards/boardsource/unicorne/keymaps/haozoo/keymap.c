@@ -199,40 +199,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 };	
 
-float guitar[][2] = SONG(FANTASIE_IMPROMPTU);
-float violin[][2] = SONG(NOCTURNE_OP_9_NO_1);
-float major[][2] = SONG(USSR_ANTHEM);
-
-// Layers
-layer_state_t layer_state_set_user(layer_state_t state) {
-    switch (get_highest_layer(state)) {
-    case _BASE:
-        break;
-    case _NUMS:
-		#ifdef AUDIO_ENABLE
-		PLAY_SONG(guitar);
-		#endif
-        break;
-    case _SYMS:
-		#ifdef AUDIO_ENABLE
-		PLAY_SONG(violin);
-		#endif
-        break;
-    case _MOVE:
-		#ifdef AUDIO_ENABLE
-		PLAY_SONG(major);
-		#endif
-        break;
-	case _FKEY:
-		break;
-	case _ALFR:
-		break;
-    default: 
-        break;
-    }
-  return state;
-}
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[_BASE] = LAYOUT_split_3x6_3(                                                                                                                       \
   	/* ╭━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━╮                      ╭━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━╮
