@@ -41,6 +41,7 @@ enum custom_keycodes {
 	ACV7,
 	ACV8,
 	ACV9,
+	SHFT,
 };
 
 // Comboes 
@@ -52,9 +53,11 @@ combo_t key_combos[] = {
 };
 
 // Key Overrides AKA mod-morphs: 
+const key_override_t bspace_override = ko_make_basic(MOD_MASK_SHIFT, R1_THUMB, LOPT(KC_BSPC));
 const key_override_t delete_override = ko_make_basic(MOD_MASK_SHIFT, KC_DEL, LOPT(KC_DEL));
 const key_override_t grvesc_override = ko_make_basic(MOD_MASK_SHIFT, KC_ESC, KC_GRV);
 const key_override_t **key_overrides = (const key_override_t *[]){
+	&bspace_override,
 	&delete_override,
 	&grvesc_override,
     NULL
@@ -78,17 +81,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	static bool v_tapped = false;
 
     switch (keycode) {
-		case KC_BSPC: 
-            if (record->event.pressed) {
-				if (mod_state & MOD_MASK_SHIFT) {
-					del_mods(MOD_MASK_SHIFT);
-					tap_code16(A(KC_BSPC));
-					set_mods(mod_state);
-				} else {
-					tap_code16(KC_BSPC);
-				}
-			}
-            break;
 		case NAV1:  
         case NAV2:
         case NAV3:
@@ -241,7 +233,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
   	*/    _______,  XXXXXXX,  KC_MPRV,  KC_MPLY,  KC_MNXT,  XXXXXXX,                         XXXXXXX,  KC_LEFT,  KC_DOWN, KC_RIGHT,  XXXXXXX,  _______, \
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
-  	*/    _______,  XXXXXXX,  XXXXXXX,  KC_VOLD,  XXXXXXX,  XXXXXXX,                         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______, \
+  	*/       SHFT,  XXXXXXX,  XXXXXXX,  KC_VOLD,  XXXXXXX,  XXXXXXX,                         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______, \
   	/* ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╮  ╭━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
   	*/                                            _______,  _______,  _______,     _______,  _______,  _______									   	    \
   	//      								   ╰─━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯  ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
