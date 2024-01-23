@@ -199,6 +199,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 };	
 
+// Layers
+layer_state_t layer_state_set_user(layer_state_t state) {
+    switch (get_highest_layer(state)) {
+    case _BASE:
+        break;
+    case _NUMS:
+		PLAY_SONG(GUITAR_SOUND);
+        break;
+    case _SYMS:
+		PLAY_SONG(VIOLIN_SOUND);
+        break;
+    case _MOVE:
+		PLAY_SONG(MAJOR_SOUND);
+        break;
+	case _FKEY:
+		break;
+	case _ALFR:
+		break;
+    default: 
+        break;
+    }
+  return state;
+}
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[_BASE] = LAYOUT_split_3x6_3(                                                                                                                       \
   	/* ╭━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━╮                      ╭━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━╮
