@@ -81,7 +81,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	static bool v_tapped = false;
 
     switch (keycode) {
-		case SHFT: 
+		case SHFT: // Help fix shift + bspc and override issue
 			if (record->event.pressed) {
 				register_code(KC_LSFT);
 			} else {
