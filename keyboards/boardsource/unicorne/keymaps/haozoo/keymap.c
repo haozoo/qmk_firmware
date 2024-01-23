@@ -210,7 +210,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
         break;
     case _NUMS:
 		#ifdef AUDIO_ENABLE
-		PLAY_SONG(guitar);
+		PLAY_SONG(MARIO_THEME);
 		#endif
         break;
     case _SYMS:
