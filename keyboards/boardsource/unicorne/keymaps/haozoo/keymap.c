@@ -81,22 +81,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     switch (keycode) {
 		case NAV1:  
-            process_nav_key(KC_1, record);
-            break;
         case NAV2:
-            process_nav_key(KC_2, record);
-            break;
         case NAV3:
-            process_nav_key(KC_3, record);
-            break;
         case NAV4:
-            process_nav_key(KC_4, record);
-            break;
         case NAV5:
-            process_nav_key(KC_5, record);
-            break;
         case NAV6:
-            process_nav_key(KC_6, record);
+            process_nav_key(keycode - NAV1 + KC_1, record);
             break;
 		case SNIPT: 
 			if (record->event.pressed) {
