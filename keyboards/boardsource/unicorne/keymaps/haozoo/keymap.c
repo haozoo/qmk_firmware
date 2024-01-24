@@ -87,6 +87,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			} else {
 				unregister_code(KC_LSFT);
 			}
+			break;
 		case NAVU: 
 			if (record->event.pressed) {
 				if (mod_state & MOD_MASK_SHIFT) {
