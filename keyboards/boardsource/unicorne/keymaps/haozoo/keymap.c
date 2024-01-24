@@ -20,18 +20,19 @@
 
 enum custom_keycodes {
     _____ = SAFE_RANGE,
-	SNIPT,  // MacOS screenshot to clipboard snipping tool + Arc browser UI component snipping tool
+	SHFT,
+	NAVU, 	// Amethyst increase main window's horizontal width + go to above tab
+	NAVD,   // Amethyst decrease main window's horizontal width + go to below tab
 	NAV1,	// Arc browser fast pinned tab navigation + MacOS fast application navigation...
 	NAV2,
 	NAV3,
 	NAV4,
 	NAV5,
 	NAV6,
+	SNIPT,  // MacOS screenshot to clipboard snipping tool + Arc browser UI component snipping tool
 	AMSW,   // Amethyst switch layouts + switch main window 
-	NAVU, 	// Amethyst increase main window's horizontal width + go to above tab
-	NAVD,   // Amethyst decrease main window's horizontal width + go to below tab
-	TD_V,   // Alfred paste tap dance
 	JIGG,   // Jiggles the mouse 
+	TD_V,   // Alfred paste tap dance
 	ACV1,   // Alfred CMD + V navigation
 	ACV2,
 	ACV3,
@@ -41,7 +42,6 @@ enum custom_keycodes {
 	ACV7,
 	ACV8,
 	ACV9,
-	SHFT,
 };
 
 // Comboes 
@@ -87,6 +87,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			} else {
 				unregister_code(KC_LSFT);
 			}
+		case NAVU: 
+			if (record->event.pressed) {
+				if (mod_state & MOD_MASK_SHIFT) {
+					del_mods(MOD_MASK_SHIFT);
+					tap_code16(C(A(KC_RIGHT)));
+					set_mods(mod_state);
+				} else {
+					tap_code16(A(G(KC_UP)));
+				}
+			}
+			break;
+		case NAVD:
+			if (record->event.pressed) {
+				if (mod_state & MOD_MASK_SHIFT) {
+					del_mods(MOD_MASK_SHIFT);
+					tap_code16(C(A(KC_LEFT)));
+					set_mods(mod_state);
+				} else {
+					tap_code16(A(G(KC_DOWN)));
+				}
+			}
+			break;
 		case NAV1:  
         case NAV2:
         case NAV3:
