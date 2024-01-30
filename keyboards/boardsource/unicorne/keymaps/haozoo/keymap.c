@@ -227,7 +227,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case KC_BTN1:
 			if (IS_LAYER_ON(_ALFR)) {
                 clear_oneshot_layer_state(ONESHOT_PRESSED); 
+				del_mods(mod_state);
 				tap_code16(KC_BTN1);
+				set_mods(mod_state);
             }
             break;	
         case KC_ENT:
