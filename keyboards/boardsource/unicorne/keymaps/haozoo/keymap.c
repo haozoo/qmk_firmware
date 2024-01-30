@@ -42,6 +42,7 @@ enum custom_keycodes {
 	ACV7,
 	ACV8,
 	ACV9,
+	LCLK,
 };
 
 // Comboes 
@@ -224,12 +225,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 clear_oneshot_layer_state(ONESHOT_PRESSED);
             }
             break;
-		case KC_BTN1:
+		case LCLK:
 			if (IS_LAYER_ON(_ALFR)) {
                 clear_oneshot_layer_state(ONESHOT_PRESSED); 
-				del_mods(mod_state);
 				tap_code16(KC_BTN1);
-				set_mods(mod_state);
             }
             break;	
         case KC_ENT:
@@ -313,7 +312,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
   	*/    _______,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______, \
   	/* ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╮  ╭━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
-  	*/                                            _______,  KC_BTN1,  KC_DOWN,       KC_UP,   KC_ENT,  _______									   	    \
+  	*/                                            _______,     LCLK,  KC_DOWN,       KC_UP,   KC_ENT,  _______									   	    \
   	//      								   ╰─━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯  ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
  	),
 };
