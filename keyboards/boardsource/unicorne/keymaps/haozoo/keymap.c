@@ -228,7 +228,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case LCLK:
 			if (IS_LAYER_ON(_ALFR)) {
                 clear_oneshot_layer_state(ONESHOT_PRESSED); 
-				SEND_STRING(SS_TAP(X_BTN1))            
+				SEND_STRING(SS_TAP(X_BTN1));            
             }
             break;	
         case KC_ENT:
