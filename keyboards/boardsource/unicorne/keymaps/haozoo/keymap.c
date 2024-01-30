@@ -13,7 +13,6 @@
 #define L1_THUMB LT(_NUMS, KC_SPC)
 #define R1_THUMB LT(_MOVE, KC_BSPC)
 #define R2_THUMB LT(_SYMS, KC_ENT)
-#define R3_PINKY LT(_FKEY, OSM(MOD_HYPR))
 
 #define LHS_WORD LOPT(KC_LEFT)
 #define RHS_WORD ROPT(KC_RIGHT)
@@ -21,6 +20,7 @@
 enum custom_keycodes {
     _____ = SAFE_RANGE,
 	SHFT,
+	FHYP,   // Turns on function layer when held, registers OSM Hyper when tapped
 	NAVU, 	// Amethyst increase main window's horizontal width + go to above tab
 	NAVD,   // Amethyst decrease main window's horizontal width + go to below tab
 	NAV1,	// Arc browser fast pinned tab navigation + MacOS fast application navigation...
@@ -74,11 +74,17 @@ void process_nav_key(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
+bool key_pressed = false;
+uint16_t FHYP_timer = 0;
+
 uint8_t mod_state;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	mod_state = get_mods();
 	static deferred_token token = INVALID_DEFERRED_TOKEN; 
 	static bool v_tapped = false;
+
+	if (record->event.pressed)
+        key_pressed = true;  
 
     switch (keycode) {
 		case SHFT: // Help fix shift + bspc and override issue
@@ -88,6 +94,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				unregister_code(KC_LSFT);
 			}
 			break;
+		case FHYP:
+            if (record->event.pressed) {
+                layer_on(_FKEY);
+                key_pressed = false;
+                FHYP_timer = timer_read();
+            } else {
+                layer_off(_FKEY);
+                if (key_pressed) break;
+                if (timer_elapsed(FHYP_timer) < TAPPING_TERM) {
+                    tap_code16(OSM(MOD_HYPR));
+                }
+            }
+            break;
 		case NAVU: 
 			if (record->event.pressed) {
 				if (mod_state & MOD_MASK_SHIFT) {
@@ -229,7 +248,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
   	*/     KC_TAB,     KC_A,     KC_S,     KC_D,     KC_F,     KC_G,                            KC_H,     KC_J,     KC_K,     KC_L,  KC_SCLN, KC_QUOTE, \
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
-  	*/    KC_LSFT,     KC_Z,     KC_X,     KC_C,     TD_V,     KC_B,                            KC_N,     KC_M, KC_COMMA,   KC_DOT, KC_SLASH, R3_PINKY, \
+  	*/    KC_LSFT,     KC_Z,     KC_X,     KC_C,     TD_V,     KC_B,                            KC_N,     KC_M, KC_COMMA,   KC_DOT, KC_SLASH,     FHYP, \
   	/* ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╮  ╭━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
   	*/                                            KC_LOPT,  KC_LCMD, L1_THUMB,    R1_THUMB, R2_THUMB,  KC_RCTL									   	    \
   	//      								   ╰─━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯  ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
@@ -286,7 +305,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
   	*/    _______,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______, \
   	/* ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╮  ╭━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
-  	*/                                            _______,  _______,  KC_DOWN,       KC_UP,   KC_ENT,  _______									   	    \
+  	*/                                            _______,  KC_BTN1,  KC_DOWN,       KC_UP,   KC_ENT,  _______									   	    \
   	//      								   ╰─━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯  ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
  	),
 };
