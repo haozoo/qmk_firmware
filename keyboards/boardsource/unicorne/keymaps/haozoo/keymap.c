@@ -228,13 +228,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case LCLK:
 			if (IS_LAYER_ON(_ALFR)) {
                 clear_oneshot_layer_state(ONESHOT_PRESSED); 
-				tap_code16(KC_BTN1);
+				tap_code(KC_BTN1);
             }
             break;	
         case KC_ENT:
             if (IS_LAYER_ON(_ALFR)) {
                 clear_oneshot_layer_state(ONESHOT_PRESSED); 
-				tap_code16(KC_ENT);
+				tap_code(KC_ENT);
             }
             break;
 		case KC_ESC:
