@@ -225,14 +225,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 clear_oneshot_layer_state(ONESHOT_PRESSED);
             }
             break;
-		case LCLK:
-			if (IS_LAYER_ON(_ALFR)) {
-                clear_oneshot_layer_state(ONESHOT_PRESSED); 
-				clear_mods();
-				tap_code16(KC_BTN1);
-				set_mods(mod_state);
-            }
-            break;	
         case KC_ENT:
             if (IS_LAYER_ON(_ALFR)) {
                 clear_oneshot_layer_state(ONESHOT_PRESSED); 
@@ -312,9 +304,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
   	*/    _______,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______, \
   	/*  ━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫                      ┣━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┫
-  	*/    _______,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,                         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______, \
+  	*/    _______,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    KC_UP,                         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  _______, \
   	/* ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━╮  ╭━━━━━━━━━╋━━━━━━━━━╋━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
-  	*/                                            _______,     LCLK,  KC_DOWN,       KC_UP,   KC_ENT,  _______									   	    \
+  	*/                                            _______,   KC_ENT,  KC_DOWN,       KC_UP,   KC_ENT,  _______									   	    \
   	//      								   ╰─━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯  ╰━━━━━━━━━┻━━━━━━━━━┻━━━━━━━━━╯
  	),
 };
