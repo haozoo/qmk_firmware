@@ -230,6 +230,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 clear_oneshot_layer_state(ONESHOT_PRESSED); 
 				del_mods(MOD_MASK_GUI);
 				tap_code16(KC_BTN1);
+				set_mods(mod_state);
             }
             break;	
         case KC_ENT:
