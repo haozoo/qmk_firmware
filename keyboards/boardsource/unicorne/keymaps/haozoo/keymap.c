@@ -141,6 +141,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			if (record->event.pressed) {
 				if (mod_state & MOD_MASK_SHIFT) {
 					tap_code16(S(G(KC_2)));
+				} else if (mod_state & MOD_MASK_GUI) {
+					tap_code16(C(G(KC_4)));
 				} else {
 					tap_code16(C(S(G(KC_4))));
 				}
