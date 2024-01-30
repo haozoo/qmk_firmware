@@ -42,7 +42,6 @@ enum custom_keycodes {
 	ACV7,
 	ACV8,
 	ACV9,
-	LCLK,
 };
 
 // Comboes 
@@ -226,10 +225,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             break;
         case KC_ENT:
-            if (IS_LAYER_ON(_ALFR)) {
-                clear_oneshot_layer_state(ONESHOT_PRESSED); 
-				tap_code16(KC_ENT);
-            }
+			if (IS_LAYER_ON(_ALFR)) {
+				if (record->event.pressed) {
+					tap_code16(KC_ENT);
+				} else {
+					clear_oneshot_layer_state(ONESHOT_PRESSED);
+				} 
+			} 
             break;
 		case KC_ESC:
             if (IS_LAYER_ON(_ALFR)) {
