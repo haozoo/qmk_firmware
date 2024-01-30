@@ -103,7 +103,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 layer_off(_FKEY);
                 if (key_pressed) break;
                 if (timer_elapsed(FHYP_timer) < TAPPING_TERM) {
-                    add_oneshot_mods(MOD_BIT(MOD_HYPR));
+                    add_oneshot_mods(MOD_BIT(KC_HYPR));
                 }
             }
             break;
@@ -224,6 +224,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 clear_oneshot_layer_state(ONESHOT_PRESSED);
             }
             break;
+		case KC_BTN1:
+			if (IS_LAYER_ON(_ALFR)) {
+                clear_oneshot_layer_state(ONESHOT_PRESSED); 
+				tap_code16(KC_BTN1);
+            }
+            break;	
         case KC_ENT:
             if (IS_LAYER_ON(_ALFR)) {
                 clear_oneshot_layer_state(ONESHOT_PRESSED); 
@@ -231,7 +237,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             break;
 		case KC_ESC:
-		case KC_BTN1:
             if (IS_LAYER_ON(_ALFR)) {
                 clear_oneshot_layer_state(ONESHOT_PRESSED); 
             }
