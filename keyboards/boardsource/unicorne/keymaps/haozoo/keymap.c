@@ -111,10 +111,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			if (record->event.pressed) {
 				if (mod_state & MOD_MASK_SHIFT) {
 					del_mods(MOD_MASK_SHIFT);
+					tap_code16(A(G(KC_UP)));
+					set_mods(mod_state);
+				} else if (mod_state & MOD_MASK_GUI) {
+					del_mods(MOD_MASK_GUI);
 					tap_code16(C(A(KC_RIGHT)));
 					set_mods(mod_state);
 				} else {
-					tap_code16(A(G(KC_UP)));
+					tap_code16(A(G(KC_RIGHT)));
 				}
 			}
 			break;
@@ -122,10 +126,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			if (record->event.pressed) {
 				if (mod_state & MOD_MASK_SHIFT) {
 					del_mods(MOD_MASK_SHIFT);
+					tap_code16(A(G(KC_DOWN)));
+					set_mods(mod_state);
+				} else if (mod_state & MOD_MASK_GUI) {
+					del_mods(MOD_MASK_GUI);
 					tap_code16(C(A(KC_LEFT)));
 					set_mods(mod_state);
 				} else {
-					tap_code16(A(G(KC_DOWN)));
+					tap_code16(A(G(KC_LEFT)));
 				}
 			}
 			break;
