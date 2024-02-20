@@ -77,19 +77,38 @@ void process_nav_key(uint16_t keycode, keyrecord_t *record) {
 
 static uint16_t idle_timer = 0;
 static uint8_t halfmin_counter = 0;
-static bool jiggling = false;
+static report_mouse_t report = {0};
+static deferred_token token;
+
+uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
+	static const int8_t deltas[32] = {
+		0, -1, -2, -2, -3, -3, -4, -4, -4, -4, -3, -3, -2, -2, -1, 0,
+		0, 1, 2, 2, 3, 3, 4, 4, 4, 4, 3, 3, 2, 2, 1, 0};
+	static uint8_t phase = 0;
+	report.x = deltas[phase];
+	report.y = deltas[(phase + 8) & 31];
+	phase = (phase + 1) & 31;
+	host_mouse_send(&report);
+	return 16;  
+};
+
+void cancel_jiggler() {
+	cancel_deferred_exec(token);
+	token = INVALID_DEFERRED_TOKEN;
+	report = (report_mouse_t){};  
+	host_mouse_send(&report);
+}
 
 void matrix_scan_user(void) {
     if (idle_timer == 0) idle_timer = timer_read();
 
-	if (!jiggling && timer_elapsed(idle_timer) > 30000) {
+	if (!token && timer_elapsed(idle_timer) > 30000) {
 		halfmin_counter++;
 		idle_timer = timer_read();
 	}
 
-	if (!jiggling && halfmin_counter >= 4) {
-		tap_code16(JIGG);
-		jiggling = true;
+	if (!token && halfmin_counter >= 4) {
+		token = defer_exec(1, jiggler_callback, NULL); 
 		halfmin_counter = 0;
 	}
 };
@@ -109,9 +128,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		idle_timer = timer_read();
 		halfmin_counter = 0; 
 
-		if (jiggling) {
-			tap_code16(JIGG);
-			jiggling = false; 
+		if (token) {
+			cancel_jiggler();
 		}
 	}
 
@@ -198,26 +216,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			break;
 		case JIGG: // Jiggle Macro 
 			if (record->event.pressed) {
-				static deferred_token token = INVALID_DEFERRED_TOKEN;
-				static report_mouse_t report = {0};
 				if (token) {
-					cancel_deferred_exec(token);
-					token = INVALID_DEFERRED_TOKEN;
-					report = (report_mouse_t){};  
-					host_mouse_send(&report);
+					cancel_jiggler();
 				} else if (keycode == JIGG) {
-					uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
-						static const int8_t deltas[32] = {
-							0, -1, -2, -2, -3, -3, -4, -4, -4, -4, -3, -3, -2, -2, -1, 0,
-							0, 1, 2, 2, 3, 3, 4, 4, 4, 4, 3, 3, 2, 2, 1, 0};
-						static uint8_t phase = 0;
-						report.x = deltas[phase];
-						report.y = deltas[(phase + 8) & 31];
-						phase = (phase + 1) & 31;
-						host_mouse_send(&report);
-						return 16;  
-					}
-				token = defer_exec(1, jiggler_callback, NULL); 
+					token = defer_exec(1, jiggler_callback, NULL); 
 				}
 			}
 			break;		
