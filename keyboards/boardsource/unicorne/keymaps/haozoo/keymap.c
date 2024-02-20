@@ -74,17 +74,46 @@ void process_nav_key(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
+
+static uint16_t idle_timer = 0;
+static uint8_t halfmin_counter = 0;
+static bool jiggling = false;
+
+void matrix_scan_user(void) {
+    if (idle_timer == 0) idle_timer = timer_read();
+
+	if (!jiggling && timer_elapsed(idle_timer) > 30000) {
+		halfmin_counter++;
+		idle_timer = timer_read();
+	}
+
+	if (!jiggling && halfmin_counter >= 4) {
+		tap_code16(JIGG);
+		jiggling = true;
+		halfmin_counter = 0;
+	}
+};
+
 bool key_pressed = false;
 uint16_t FHYP_timer = 0;
-
 uint8_t mod_state;
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	mod_state = get_mods();
 	static deferred_token token = INVALID_DEFERRED_TOKEN; 
 	static bool v_tapped = false;
 
-	if (record->event.pressed)
+	if (record->event.pressed) {
         key_pressed = true;  
+
+		idle_timer = timer_read();
+		halfmin_counter = 0; 
+
+		if (jiggling) {
+			tap_code16(JIGG);
+			jiggling = false; 
+		}
+	}
 
     switch (keycode) {
 		case SHFT: // Help fix shift + bspc and override issue
