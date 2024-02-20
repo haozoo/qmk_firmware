@@ -211,14 +211,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			break;
 		case JIGG: // Jiggle Macro 
 			if (record->event.pressed) {
-				if (token) {
-					cancel_deferred_exec(token);
-					token = INVALID_DEFERRED_TOKEN;
-					report = (report_mouse_t){};  
-					host_mouse_send(&report);
-				} else if (keycode == JIGG) {
-					token = defer_exec(1, jiggler_callback, NULL); 
-				}
+				token = defer_exec(1, jiggler_callback, NULL); 	
 			}
 			break;		
 		case TD_V: // Paste Tap dance + Macro
