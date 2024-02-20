@@ -92,13 +92,6 @@ uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
 	return 16;  
 };
 
-void cancel_jiggler() {
-	cancel_deferred_exec(token);
-	token = INVALID_DEFERRED_TOKEN;
-	report = (report_mouse_t){};  
-	host_mouse_send(&report);
-};
-
 void matrix_scan_user(void) {
     if (idle_timer == 0) idle_timer = timer_read();
 
@@ -128,7 +121,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		halfmin_counter = 0; 
 
 		if (token) {
-			cancel_jiggler();
+			cancel_deferred_exec(token);
+			token = INVALID_DEFERRED_TOKEN;
+			report = (report_mouse_t){};  
+			host_mouse_send(&report);
 		}
 	}
 
@@ -216,7 +212,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		case JIGG: // Jiggle Macro 
 			if (record->event.pressed) {
 				if (token) {
-					cancel_jiggler();
+					cancel_deferred_exec(token);
+					token = INVALID_DEFERRED_TOKEN;
+					report = (report_mouse_t){};  
+					host_mouse_send(&report);
 				} else if (keycode == JIGG) {
 					token = defer_exec(1, jiggler_callback, NULL); 
 				}
