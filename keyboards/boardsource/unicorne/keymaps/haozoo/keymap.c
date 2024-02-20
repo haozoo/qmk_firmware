@@ -78,7 +78,7 @@ void process_nav_key(uint16_t keycode, keyrecord_t *record) {
 static uint16_t idle_timer = 0;
 static uint8_t halfmin_counter = 0;
 static report_mouse_t report = {0};
-static deferred_token token;
+static deferred_token token = INVALID_DEFERRED_TOKEN;
 
 uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
 	static const int8_t deltas[32] = {
@@ -119,7 +119,6 @@ uint8_t mod_state;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	mod_state = get_mods();
-	static deferred_token token = INVALID_DEFERRED_TOKEN; 
 	static bool v_tapped = false;
 
 	if (record->event.pressed) {
