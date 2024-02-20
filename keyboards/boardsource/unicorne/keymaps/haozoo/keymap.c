@@ -97,7 +97,7 @@ void cancel_jiggler() {
 	token = INVALID_DEFERRED_TOKEN;
 	report = (report_mouse_t){};  
 	host_mouse_send(&report);
-}
+};
 
 void matrix_scan_user(void) {
     if (idle_timer == 0) idle_timer = timer_read();
