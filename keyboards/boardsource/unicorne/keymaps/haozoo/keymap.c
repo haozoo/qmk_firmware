@@ -100,7 +100,7 @@ void matrix_scan_user(void) {
 		idle_timer = timer_read();
 	}
 
-	if (!token && halfmin_counter >= 4) {
+	if (!token && halfmin_counter >= 11) {
 		token = defer_exec(1, jiggler_callback, NULL); 
 		halfmin_counter = 0;
 	}
