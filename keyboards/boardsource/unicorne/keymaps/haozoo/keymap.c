@@ -64,22 +64,8 @@ const key_override_t **key_overrides = (const key_override_t *[]){
 };
 
 // Macros
-void process_nav_key(uint16_t keycode, keyrecord_t *record) {
-    if (record->event.pressed) {
-        if (get_mods() & MOD_MASK_SHIFT) {
-			tap_code16(C(A(G(keycode))));
-        } else {
-			tap_code16(G(keycode));
-        }
-    }
-}
-
-
-static uint16_t idle_timer = 0;
-static uint8_t halfmin_counter = 0;
 static report_mouse_t report = {0};
 static deferred_token token = INVALID_DEFERRED_TOKEN;
-
 uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
 	static const int8_t deltas[32] = {
 		0, -1, -2, -2, -3, -3, -4, -4, -4, -4, -3, -3, -2, -2, -1, 0,
@@ -92,6 +78,9 @@ uint32_t jiggler_callback(uint32_t trigger_time, void* cb_arg) {
 	return 16;  
 };
 
+#ifdef AFK_JIGGLE 
+static uint16_t idle_timer = 0;
+static uint8_t halfmin_counter = 0;
 void matrix_scan_user(void) {
     if (idle_timer == 0) idle_timer = timer_read();
 
@@ -105,6 +94,17 @@ void matrix_scan_user(void) {
 		halfmin_counter = 0;
 	}
 };
+#endif
+
+void process_nav_key(uint16_t keycode, keyrecord_t *record) {
+    if (record->event.pressed) {
+        if (get_mods() & MOD_MASK_SHIFT) {
+			tap_code16();
+        } else {
+			tap_code16(G(keycode));
+        }
+    }
+}
 
 bool key_pressed = false;
 uint16_t FHYP_timer = 0;
@@ -116,9 +116,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 	if (record->event.pressed) {
         key_pressed = true;  
-
+		
+		#ifdef AFK_JIGGLE
 		idle_timer = timer_read();
 		halfmin_counter = 0; 
+		#endif
 
 		if (token) {
 			cancel_deferred_exec(token);
@@ -155,8 +157,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 					del_mods(MOD_MASK_SHIFT);
 					tap_code16(A(G(KC_UP)));
 					set_mods(mod_state);
-				} else if (mod_state & MOD_MASK_GUI) {
-					del_mods(MOD_MASK_GUI);
+				} else if (mod_state & MOD_MASK_CTRL) {
+					del_mods(MOD_MASK_CTRL);
 					tap_code16(C(A(KC_RIGHT)));
 					set_mods(mod_state);
 				} else {
@@ -170,8 +172,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 					del_mods(MOD_MASK_SHIFT);
 					tap_code16(A(G(KC_DOWN)));
 					set_mods(mod_state);
-				} else if (mod_state & MOD_MASK_GUI) {
-					del_mods(MOD_MASK_GUI);
+				} else if (mod_state & MOD_MASK_CTRL) {
+					del_mods(MOD_MASK_CTRL);
 					tap_code16(C(A(KC_LEFT)));
 					set_mods(mod_state);
 				} else {
